@@ -165,6 +165,42 @@ Safety:
 
 ---
 
+## Jupiter swap auto-build and send (best route)
+
+For best execution price/route, prefer Jupiter aggregator. It can route through Raydium CLMM/CPMM and other venues automatically.
+
+- Script: [scripts/jupiter_swap_auto.js](scripts/jupiter_swap_auto.js)
+- Required:
+  - `--input-mint`
+  - `--output-mint`
+  - `--amount-in` (raw integer in input mint decimals)
+  - secret from `--secret-file` or `--secret-env`
+- Optional:
+  - `--slippage-bps` (default 100)
+  - `--raydium-only` (restrict route providers to Raydium labels)
+  - `--simulate-only` (real on-chain simulate + logs)
+
+Examples:
+
+```bash
+cd /path/to/xstock-skills
+npm install
+npm run jupiter-swap-auto -- --input-mint So11111111111111111111111111111111111111112 --output-mint EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v --amount-in 10000000 --secret-file ~/.config/solana/id.json --simulate-only
+```
+
+Raydium-only route filter:
+
+```bash
+npm run jupiter-swap-auto -- --input-mint <MINT_IN> --output-mint <MINT_OUT> --amount-in <RAW> --raydium-only --secret-file ~/.config/solana/id.json
+```
+
+Safety:
+
+- Always run `--simulate-only` first, then send.
+- Never expose private keys in chat, logs, or git files.
+
+---
+
 ## Raydium add/remove liquidity transaction sending
 
 You can send Raydium LP transactions (add liquidity / remove liquidity) with this skill.
@@ -318,6 +354,7 @@ Use this skill when the user:
 - Wants to derive a **Solana address** from a **private key** (with security warnings)
 - Wants to **swap** xStocks via **Raydium** (guide to SDK/transaction flow)
 - Wants to **use Raydium SDK to send swap transactions**
+- Wants to **use Jupiter for best-route swaps** (optionally Raydium-only)
 - Wants to **send Raydium add/remove liquidity transactions**
 - Wants to **auto-build and send Raydium add/remove liquidity via SDK**
 - Wants to query a wallet's assets with **value > 1U**
@@ -330,6 +367,7 @@ Use this skill when the user:
 - [scripts/raydium_lp_tx_send.js](scripts/raydium_lp_tx_send.js) — sign/send prebuilt Raydium LP tx
 - [scripts/raydium_lp_auto.js](scripts/raydium_lp_auto.js) — auto-build Raydium LP add/remove tx via SDK
 - [scripts/raydium_swap_auto.js](scripts/raydium_swap_auto.js) — auto-build and send Raydium swap via SDK
+- [scripts/jupiter_swap_auto.js](scripts/jupiter_swap_auto.js) — Jupiter best-route swap (optional Raydium-only)
 - [scripts/query_assets_over_1u.js](scripts/query_assets_over_1u.js) — query assets above USD threshold
 - [scripts/query_xstock_position.js](scripts/query_xstock_position.js) — query a wallet's position for one xStock mint
 - [package.json](package.json) — `npm install` for script dependencies

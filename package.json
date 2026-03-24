@@ -9,7 +9,8 @@
     "xstock-position": "node scripts/query_xstock_position.js",
     "raydium-lp-send": "node scripts/raydium_lp_tx_send.js",
     "raydium-lp-auto": "node scripts/raydium_lp_auto.js",
-    "raydium-swap-auto": "node scripts/raydium_swap_auto.js"
+    "raydium-swap-auto": "node scripts/raydium_swap_auto.js",
+    "jupiter-swap-auto": "node scripts/jupiter_swap_auto.js"
   },
   "dependencies": {
     "@raydium-io/raydium-sdk-v2": "^0.2.33-alpha",
