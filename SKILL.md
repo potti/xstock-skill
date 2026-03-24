@@ -130,6 +130,41 @@ Official docs and examples: [https://docs.raydium.io/](https://docs.raydium.io/)
 
 ---
 
+## Solana wallet assets over 1U
+
+Use this when the user asks to query a wallet's assets with USD value greater than 1.
+
+- Script: [scripts/query_assets_over_1u.js](scripts/query_assets_over_1u.js)
+- Read-only: no private key needed.
+- Threshold: `--min-usd` (default `1`).
+
+Run:
+
+```bash
+cd /path/to/xstock-skills
+npm install
+node scripts/query_assets_over_1u.js --wallet <SOLANA_WALLET_ADDRESS> --min-usd 1
+```
+
+Or:
+
+```bash
+npm run assets-over-1u -- --wallet <SOLANA_WALLET_ADDRESS> --min-usd 1
+```
+
+Data source behavior:
+
+- Balances from Solana RPC (`getBalance`, `getParsedTokenAccountsByOwner`)
+- USD prices from Dexscreener (`/latest/dex/tokens/<mint>`)
+- Output JSON sorted by `valueUsd` descending
+
+Security rules:
+
+- **Never request, store, or print private keys for this query flow.**
+- If a user sends a private key accidentally, do not echo it and suggest immediate key rotation.
+
+---
+
 ## When this skill applies
 
 Use this skill when the user:
@@ -139,9 +174,11 @@ Use this skill when the user:
 - Wants **Raydium pool / TVL / fee** information for a pair involving an xStock
 - Wants to derive a **Solana address** from a **private key** (with security warnings)
 - Wants to **swap** xStocks via **Raydium** (guide to SDK/transaction flow)
+- Wants to query a wallet's assets with **value > 1U**
 
 ## Related files
 
 - [reference.md](reference.md) — platform notes, links, sample mint list
 - [scripts/keypair_from_secret.js](scripts/keypair_from_secret.js) — pubkey from secret (Node)
+- [scripts/query_assets_over_1u.js](scripts/query_assets_over_1u.js) — query assets above USD threshold
 - [package.json](package.json) — `npm install` for script dependencies

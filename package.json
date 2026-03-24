@@ -2,9 +2,10 @@
   "name": "xstock-skill-scripts",
   "private": true,
   "type": "module",
-  "description": "Utility scripts for the xstock OpenClaw skill (Solana keypair helpers)",
+  "description": "Utility scripts for xstock OpenClaw skills",
   "scripts": {
-    "keypair": "node scripts/keypair_from_secret.js"
+    "keypair": "node scripts/keypair_from_secret.js",
+    "assets-over-1u": "node scripts/query_assets_over_1u.js"
   },
   "dependencies": {
     "@solana/web3.js": "^1.98.0",
