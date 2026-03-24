@@ -165,6 +165,41 @@ Security rules:
 
 ---
 
+## Query specified xStock token position
+
+Use this when the user asks: "查询指定 xstock token 的持仓量" (wallet + token mint).
+
+- Script: [scripts/query_xstock_position.js](scripts/query_xstock_position.js)
+- Inputs:
+  - `--wallet` wallet address
+  - `--mint` target xStock mint (for example `NVDAx` mint)
+  - optional `--rpc`
+- Output:
+  - token account count
+  - total token amount for the wallet
+  - optional USD price/value (from Dexscreener)
+
+Run:
+
+```bash
+cd /path/to/xstock-skills
+npm install
+node scripts/query_xstock_position.js --wallet <SOLANA_WALLET_ADDRESS> --mint <XSTOCK_MINT>
+```
+
+Or:
+
+```bash
+npm run xstock-position -- --wallet <SOLANA_WALLET_ADDRESS> --mint <XSTOCK_MINT>
+```
+
+Security rules:
+
+- This flow is read-only. **Never request or use private keys.**
+- If private key is provided accidentally, do not echo it and suggest immediate rotation.
+
+---
+
 ## When this skill applies
 
 Use this skill when the user:
@@ -175,10 +210,12 @@ Use this skill when the user:
 - Wants to derive a **Solana address** from a **private key** (with security warnings)
 - Wants to **swap** xStocks via **Raydium** (guide to SDK/transaction flow)
 - Wants to query a wallet's assets with **value > 1U**
+- Wants to query a wallet's holding amount for a **specified xStock mint**
 
 ## Related files
 
 - [reference.md](reference.md) — platform notes, links, sample mint list
 - [scripts/keypair_from_secret.js](scripts/keypair_from_secret.js) — pubkey from secret (Node)
 - [scripts/query_assets_over_1u.js](scripts/query_assets_over_1u.js) — query assets above USD threshold
+- [scripts/query_xstock_position.js](scripts/query_xstock_position.js) — query a wallet's position for one xStock mint
 - [package.json](package.json) — `npm install` for script dependencies

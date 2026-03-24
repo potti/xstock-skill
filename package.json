@@ -5,7 +5,8 @@
   "description": "Utility scripts for xstock OpenClaw skills",
   "scripts": {
     "keypair": "node scripts/keypair_from_secret.js",
-    "assets-over-1u": "node scripts/query_assets_over_1u.js"
+    "assets-over-1u": "node scripts/query_assets_over_1u.js",
+    "xstock-position": "node scripts/query_xstock_position.js"
   },
   "dependencies": {
     "@solana/web3.js": "^1.98.0",
