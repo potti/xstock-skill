@@ -130,6 +130,79 @@ Official docs and examples: [https://docs.raydium.io/](https://docs.raydium.io/)
 
 ---
 
+## Raydium add/remove liquidity transaction sending
+
+You can send Raydium LP transactions (add liquidity / remove liquidity) with this skill.
+
+- Script: [scripts/raydium_lp_tx_send.js](scripts/raydium_lp_tx_send.js)
+- This script signs and broadcasts a **prebuilt serialized transaction** (`--tx-base64`).
+- It supports both add-liquidity and remove-liquidity tx payloads.
+- It does not construct LP instructions by itself (instruction building depends on pool type and Raydium SDK flow).
+
+Run (recommended first simulate):
+
+```bash
+cd /path/to/xstock-skills
+npm install
+node scripts/raydium_lp_tx_send.js --tx-base64 "<BASE64_TX>" --secret-file ~/.config/solana/id.json --simulate-only
+```
+
+Then send:
+
+```bash
+node scripts/raydium_lp_tx_send.js --tx-base64 "<BASE64_TX>" --secret-file ~/.config/solana/id.json
+```
+
+Alternative secret source:
+
+```bash
+export SOLANA_SECRET_BASE58='...'
+node scripts/raydium_lp_tx_send.js --tx-base64 "<BASE64_TX>" --secret-env SOLANA_SECRET_BASE58 --simulate-only
+unset SOLANA_SECRET_BASE58
+```
+
+Mandatory safety checks before send:
+
+- [ ] Confirm tx payload is from a trusted Raydium flow and correct pool.
+- [ ] Verify token mints, input amounts, and minimum receive constraints.
+- [ ] Run `--simulate-only` first and inspect errors/logs.
+- [ ] Never print, commit, or share private keys.
+
+---
+
+## Raydium add/remove liquidity auto-build (SDK)
+
+You can also auto-build add/remove liquidity transactions using Raydium SDK v2, then send directly.
+
+- Script: [scripts/raydium_lp_auto.js](scripts/raydium_lp_auto.js)
+- Action:
+  - `--action add` with `--amount-a`
+  - `--action remove` with `--lp-amount`
+- Required:
+  - `--pool-id`
+  - wallet secret from `--secret-file` or `--secret-env`
+
+Examples:
+
+```bash
+cd /path/to/xstock-skills
+npm install
+npm run raydium-lp-auto -- --action add --pool-id <POOL_ID> --amount-a 1 --secret-file ~/.config/solana/id.json --simulate-only
+```
+
+```bash
+npm run raydium-lp-auto -- --action remove --pool-id <POOL_ID> --lp-amount 0.2 --secret-file ~/.config/solana/id.json
+```
+
+Notes:
+
+- This helper targets standard Raydium AMM-style liquidity flows.
+- `--simulate-only` performs real on-chain `simulateTransaction` and returns logs/errors.
+- Always run `--simulate-only` first, then remove it to broadcast.
+- Never expose private keys in chat/logs.
+
+---
+
 ## Solana wallet assets over 1U
 
 Use this when the user asks to query a wallet's assets with USD value greater than 1.
@@ -209,6 +282,8 @@ Use this skill when the user:
 - Wants **Raydium pool / TVL / fee** information for a pair involving an xStock
 - Wants to derive a **Solana address** from a **private key** (with security warnings)
 - Wants to **swap** xStocks via **Raydium** (guide to SDK/transaction flow)
+- Wants to **send Raydium add/remove liquidity transactions**
+- Wants to **auto-build and send Raydium add/remove liquidity via SDK**
 - Wants to query a wallet's assets with **value > 1U**
 - Wants to query a wallet's holding amount for a **specified xStock mint**
 
@@ -216,6 +291,8 @@ Use this skill when the user:
 
 - [reference.md](reference.md) — platform notes, links, sample mint list
 - [scripts/keypair_from_secret.js](scripts/keypair_from_secret.js) — pubkey from secret (Node)
+- [scripts/raydium_lp_tx_send.js](scripts/raydium_lp_tx_send.js) — sign/send prebuilt Raydium LP tx
+- [scripts/raydium_lp_auto.js](scripts/raydium_lp_auto.js) — auto-build Raydium LP add/remove tx via SDK
 - [scripts/query_assets_over_1u.js](scripts/query_assets_over_1u.js) — query assets above USD threshold
 - [scripts/query_xstock_position.js](scripts/query_xstock_position.js) — query a wallet's position for one xStock mint
 - [package.json](package.json) — `npm install` for script dependencies
