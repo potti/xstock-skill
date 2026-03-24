@@ -69,9 +69,27 @@ function parseSecret(raw) {
   return bs58.decode(s);
 }
 
+function resolveEnvSecret(explicitEnvName) {
+  const candidates = [
+    explicitEnvName,
+    "SOLANA_SECRET_BASE58",
+    "SOLANA_PRIVATE_KEY",
+    "OPENCLAW_SOLANA_SECRET",
+  ].filter(Boolean);
+  for (const name of candidates) {
+    const v = process.env[name];
+    if (v && String(v).trim()) return String(v);
+  }
+  return "";
+}
+
 function loadKeypair(args) {
-  const raw = args.secretFile ? fs.readFileSync(args.secretFile, "utf8") : process.env[args.secretEnv] || "";
-  if (!raw) throw new Error("No secret provided: use --secret-file or --secret-env");
+  const raw = args.secretFile ? fs.readFileSync(args.secretFile, "utf8") : resolveEnvSecret(args.secretEnv);
+  if (!raw) {
+    throw new Error(
+      "No secret provided: use --secret-file or env (try SOLANA_SECRET_BASE58 / SOLANA_PRIVATE_KEY / OPENCLAW_SOLANA_SECRET)",
+    );
+  }
   const s = parseSecret(raw);
   if (s.length === 64) return Keypair.fromSecretKey(s);
   if (s.length === 32) return Keypair.fromSeed(s);

@@ -83,6 +83,27 @@ Swagger: [https://api-v3.raydium.io/docs](https://api-v3.raydium.io/docs)
 
 **Security:** Treat private keys as **secrets**. Never log them, never commit them to git, never paste them into chat. Prefer env vars and local-only tooling.
 
+### OpenClaw env configuration (recommended)
+
+You can store the private key in `openclaw.json` environment variables, then scripts read it via `process.env`.
+
+Example:
+
+```json
+{
+  "env": {
+    "OPENCLAW_SOLANA_SECRET": "YOUR_BASE58_OR_JSON_64_SECRET"
+  }
+}
+```
+
+Supported env names in scripts (fallback order):
+
+- value from `--secret-env <NAME>`
+- `SOLANA_SECRET_BASE58`
+- `SOLANA_PRIVATE_KEY`
+- `OPENCLAW_SOLANA_SECRET`
+
 **Supported secret formats (common):**
 
 - 64-byte secret key (often 88-char **base58**, or JSON array of 64 numbers from `solana-keygen`)
