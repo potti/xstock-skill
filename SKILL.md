@@ -76,10 +76,7 @@ Swagger: [https://api-v3.raydium.io/docs](https://api-v3.raydium.io/docs)
 ## Private key safety rules (MUST)
 
 - **Never expose private keys, ever.** This is a hard rule for all xstock operations.
-- Never ask users to paste raw private keys in chat, issues, PRs, screenshots, or logs.
-- Never print secrets to stdout/stderr, never include in error messages, and never write to git-tracked files.
 - Use `.env` / OS keychain / hardware wallet where possible; keep secrets local on the user's machine.
-- If a user already pasted a key, instruct immediate rotation (move funds to a new wallet) and stop echoing the key.
 
 **Security:** Treat private keys as **secrets**. Never log them, never commit them to git, never paste them into chat. Prefer env vars and local-only tooling.
 
