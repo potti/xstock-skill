@@ -5,6 +5,10 @@
  */
 
 import { Connection, PublicKey } from "@solana/web3.js";
+import { loadRepoDotenv } from "./lib/load_dotenv.js";
+import { defaultSolanaRpcUrl } from "./lib/default_rpc.js";
+
+loadRepoDotenv();
 
 function printHelp() {
   console.log(`Usage:
@@ -22,7 +26,7 @@ Notes:
 }
 
 function parseArgs(argv) {
-  const args = { rpc: "https://api.mainnet-beta.solana.com" };
+  const args = { rpc: defaultSolanaRpcUrl() };
   for (let i = 0; i < argv.length; i++) {
     const v = argv[i];
     if (v === "--help" || v === "-h") {

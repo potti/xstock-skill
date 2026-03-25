@@ -5,6 +5,10 @@
  */
 
 import { Connection, PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { loadRepoDotenv } from "./lib/load_dotenv.js";
+import { defaultSolanaRpcUrl } from "./lib/default_rpc.js";
+
+loadRepoDotenv();
 
 const WSOL_MINT = "So11111111111111111111111111111111111111112";
 
@@ -23,7 +27,7 @@ Notes:
 }
 
 function parseArgs(argv) {
-  const args = { minUsd: 1, rpc: "https://api.mainnet-beta.solana.com" };
+  const args = { minUsd: 1, rpc: defaultSolanaRpcUrl() };
   for (let i = 0; i < argv.length; i++) {
     const v = argv[i];
     if (v === "--help" || v === "-h") {

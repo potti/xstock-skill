@@ -8,6 +8,7 @@
 import { Connection, VersionedTransaction } from "@solana/web3.js";
 import { loadRepoDotenv } from "./lib/load_dotenv.js";
 import { loadKeypair } from "./lib/solana_secret.js";
+import { defaultSolanaRpcUrl } from "./lib/default_rpc.js";
 
 loadRepoDotenv();
 
@@ -28,7 +29,7 @@ Notes:
 
 function parseArgs(argv) {
   const args = {
-    rpc: "https://api.mainnet-beta.solana.com",
+    rpc: defaultSolanaRpcUrl(),
     secretEnv: "SOLANA_SECRET_BASE58",
     simulateOnly: false,
   };

@@ -7,6 +7,7 @@
 import { Connection, VersionedTransaction } from "@solana/web3.js";
 import { loadKeypair } from "./lib/solana_secret.js";
 import { loadRepoDotenv } from "./lib/load_dotenv.js";
+import { defaultSolanaRpcUrl } from "./lib/default_rpc.js";
 
 loadRepoDotenv();
 
@@ -21,7 +22,7 @@ Required:
 
 Options:
   --slippage-bps <n>       default 100
-  --rpc <url>              default https://api.mainnet-beta.solana.com
+  --rpc <url>              default SOLANA_RPC_URL or mainnet-beta
   --secret-file <path>     key file (json[64] or base58)
   --secret-env <name>      default SOLANA_SECRET_BASE58
   --raydium-only           restrict Jupiter route to Raydium venues only
@@ -39,7 +40,7 @@ Example:
 
 function parseArgs(argv) {
   const args = {
-    rpc: "https://api.mainnet-beta.solana.com",
+    rpc: defaultSolanaRpcUrl(),
     secretEnv: "SOLANA_SECRET_BASE58",
     slippageBps: 100,
     simulateOnly: false,

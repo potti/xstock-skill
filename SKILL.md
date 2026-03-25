@@ -92,10 +92,15 @@ Example:
 ```json
 {
   "env": {
-    "OPENCLAW_SOLANA_SECRET": "YOUR_BASE58_OR_JSON_64_SECRET"
+    "OPENCLAW_SOLANA_SECRET": "YOUR_BASE58_OR_JSON_64_SECRET",
+    "SOLANA_RPC_URL": "https://api.mainnet-beta.solana.com"
   }
 }
 ```
+
+`SOLANA_RPC_URL` is the default for scripts when `--rpc` is omitted (same value is fine). Override with a paid RPC (Helius, QuickNode, Alchemy) if the public endpoint is slow or blocked.
+
+See also [openclaw.json](openclaw.json) in this repo (RPC only; add secrets in your local copy or merge into your agent config).
 
 Supported env names in scripts (fallback order):
 
@@ -383,6 +388,7 @@ Use this skill when the user:
 
 ## Related files
 
+- [tests/](tests/) — run `npm test` (CLI `--help` smoke + secret helper unit tests); optional `npm run test:integration` hits Jupiter quote API
 - [reference.md](reference.md) — platform notes, links, sample mint list
 - [scripts/keypair_from_secret.js](scripts/keypair_from_secret.js) — pubkey from secret (Node)
 - [scripts/raydium_lp_tx_send.js](scripts/raydium_lp_tx_send.js) — sign/send prebuilt Raydium LP tx

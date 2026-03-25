@@ -10,6 +10,7 @@ import { Connection } from "@solana/web3.js";
 import { Raydium, TxVersion } from "@raydium-io/raydium-sdk-v2";
 import { loadKeypair } from "./lib/solana_secret.js";
 import { loadRepoDotenv } from "./lib/load_dotenv.js";
+import { defaultSolanaRpcUrl } from "./lib/default_rpc.js";
 
 loadRepoDotenv();
 
@@ -19,7 +20,7 @@ function help() {
 
 Options:
   --slippage-bps <n>     default 100 (1%)
-  --rpc <url>            default https://api.mainnet-beta.solana.com
+  --rpc <url>            default SOLANA_RPC_URL or mainnet-beta
   --secret-env <name>    default SOLANA_SECRET_BASE58
   --simulate-only        run simulateTransaction and print logs
 
@@ -35,7 +36,7 @@ Example:
 
 function parseArgs(argv) {
   const args = {
-    rpc: "https://api.mainnet-beta.solana.com",
+    rpc: defaultSolanaRpcUrl(),
     secretEnv: "SOLANA_SECRET_BASE58",
     slippageBps: 100,
     simulateOnly: false,

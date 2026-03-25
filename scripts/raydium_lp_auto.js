@@ -12,6 +12,7 @@ import { Connection } from "@solana/web3.js";
 import { Percent, Raydium, TokenAmount, TxVersion, toToken } from "@raydium-io/raydium-sdk-v2";
 import { loadKeypair } from "./lib/solana_secret.js";
 import { loadRepoDotenv } from "./lib/load_dotenv.js";
+import { defaultSolanaRpcUrl } from "./lib/default_rpc.js";
 
 loadRepoDotenv();
 
@@ -40,7 +41,7 @@ Examples:
 
 function parseArgs(argv) {
   const args = {
-    rpc: "https://api.mainnet-beta.solana.com",
+    rpc: defaultSolanaRpcUrl(),
     secretEnv: "SOLANA_SECRET_BASE58",
     slippageBps: 100,
     simulateOnly: false,
