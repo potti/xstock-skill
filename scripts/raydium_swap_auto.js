@@ -4,12 +4,14 @@
  * fixedSide=in: user specifies input amount.
  */
 
-import fs from "node:fs";
-import bs58 from "bs58";
 import BN from "bn.js";
 import Decimal from "decimal.js";
-import { Connection, Keypair } from "@solana/web3.js";
+import { Connection } from "@solana/web3.js";
 import { Raydium, TxVersion } from "@raydium-io/raydium-sdk-v2";
+import { loadKeypair } from "./lib/solana_secret.js";
+import { loadRepoDotenv } from "./lib/load_dotenv.js";
+
+loadRepoDotenv();
 
 function help() {
   console.log(`Usage:
@@ -53,43 +55,6 @@ function parseArgs(argv) {
   return args;
 }
 
-function parseSecret(raw) {
-  const s = raw.trim();
-  if (s.startsWith("[")) {
-    const arr = JSON.parse(s);
-    if (!Array.isArray(arr) || arr.length !== 64) throw new Error("JSON secret must be 64 bytes");
-    return Uint8Array.from(arr.map((x) => Number(x)));
-  }
-  return bs58.decode(s);
-}
-
-function resolveEnvSecret(explicitEnvName) {
-  const candidates = [
-    explicitEnvName,
-    "SOLANA_SECRET_BASE58",
-    "SOLANA_PRIVATE_KEY",
-    "OPENCLAW_SOLANA_SECRET",
-  ].filter(Boolean);
-  for (const name of candidates) {
-    const v = process.env[name];
-    if (v && String(v).trim()) return String(v);
-  }
-  return "";
-}
-
-function loadKeypair(args) {
-  const raw = args.secretFile ? fs.readFileSync(args.secretFile, "utf8") : resolveEnvSecret(args.secretEnv);
-  if (!raw) {
-    throw new Error(
-      "No secret provided: use --secret-file or env (try SOLANA_SECRET_BASE58 / SOLANA_PRIVATE_KEY / OPENCLAW_SOLANA_SECRET)",
-    );
-  }
-  const s = parseSecret(raw);
-  if (s.length === 64) return Keypair.fromSecretKey(s);
-  if (s.length === 32) return Keypair.fromSeed(s);
-  throw new Error("Secret must decode to 32 or 64 bytes");
-}
-
 function pickSimulationTx(txBuilderResult) {
   const tx = txBuilderResult?.transaction;
   if (!tx) return null;
@@ -107,7 +72,7 @@ async function main() {
     throw new Error("--slippage-bps must be within 1..5000");
   }
 
-  const owner = loadKeypair(args);
+  const owner = loadKeypair({ secretFile: args.secretFile, secretEnv: args.secretEnv });
   const connection = new Connection(args.rpc, "confirmed");
   const raydium = await Raydium.load({ connection, owner, disableLoadToken: false });
   await raydium.account.fetchWalletTokenAccounts();

@@ -4,6 +4,8 @@
   "type": "module",
   "description": "Utility scripts for xstock OpenClaw skills",
   "scripts": {
+    "test": "node --test tests/",
+    "test:integration": "node --test tests/jupiter_quote.integration.test.js",
     "keypair": "node scripts/keypair_from_secret.js",
     "assets-over-1u": "node scripts/query_assets_over_1u.js",
     "xstock-position": "node scripts/query_xstock_position.js",
@@ -16,6 +18,8 @@
     "@raydium-io/raydium-sdk-v2": "^0.2.33-alpha",
     "@solana/web3.js": "^1.98.0",
     "bn.js": "^5.2.2",
-    "bs58": "^6.0.0"
+    "bs58": "^6.0.0",
+    "dotenv": "^16.4.7",
+    "undici": "^6.21.1"
   }
 }

@@ -5,9 +5,11 @@
  * a serialized base64 transaction payload generated elsewhere.
  */
 
-import fs from "node:fs";
-import { Connection, Keypair, VersionedTransaction } from "@solana/web3.js";
-import bs58 from "bs58";
+import { Connection, VersionedTransaction } from "@solana/web3.js";
+import { loadRepoDotenv } from "./lib/load_dotenv.js";
+import { loadKeypair } from "./lib/solana_secret.js";
+
+loadRepoDotenv();
 
 function printHelp() {
   console.log(`Usage:
@@ -42,48 +44,6 @@ function parseArgs(argv) {
   return args;
 }
 
-function parseSecret(raw) {
-  const s = raw.trim();
-  if (s.startsWith("[")) {
-    const arr = JSON.parse(s);
-    if (!Array.isArray(arr) || arr.length !== 64) {
-      throw new Error("JSON secret must be a 64-element byte array");
-    }
-    return Uint8Array.from(arr.map((x) => Number(x)));
-  }
-  return bs58.decode(s);
-}
-
-function resolveEnvSecret(explicitEnvName) {
-  const candidates = [
-    explicitEnvName,
-    "SOLANA_SECRET_BASE58",
-    "SOLANA_PRIVATE_KEY",
-    "OPENCLAW_SOLANA_SECRET",
-  ].filter(Boolean);
-  for (const name of candidates) {
-    const v = process.env[name];
-    if (v && String(v).trim()) return String(v);
-  }
-  return "";
-}
-
-function loadKeypair(args) {
-  let raw = "";
-  if (args.secretFile) raw = fs.readFileSync(args.secretFile, "utf8");
-  else raw = resolveEnvSecret(args.secretEnv);
-
-  if (!raw) {
-    throw new Error(
-      "No secret provided: use --secret-file or env (try SOLANA_SECRET_BASE58 / SOLANA_PRIVATE_KEY / OPENCLAW_SOLANA_SECRET)",
-    );
-  }
-  const secret = parseSecret(raw);
-  if (secret.length === 32) return Keypair.fromSeed(secret);
-  if (secret.length === 64) return Keypair.fromSecretKey(secret);
-  throw new Error("Secret must decode to 32 bytes (seed) or 64 bytes (full keypair)");
-}
-
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   if (args.help || !args.txBase64) {
@@ -91,7 +51,7 @@ async function main() {
     process.exit(args.help ? 0 : 1);
   }
 
-  const keypair = loadKeypair(args);
+  const keypair = loadKeypair({ secretFile: args.secretFile, secretEnv: args.secretEnv });
   const connection = new Connection(args.rpc, "confirmed");
 
   const tx = VersionedTransaction.deserialize(Buffer.from(args.txBase64, "base64"));
