@@ -116,7 +116,7 @@ async function main() {
 
   if (args.simulateOnly) {
     const sim = await connection.simulateTransaction(tx, {
-      sigVerify: true,
+      sigVerify: false,
       commitment: "confirmed",
       replaceRecentBlockhash: true,
     });
